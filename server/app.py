@@ -15,6 +15,10 @@ app = Flask(__name__)
 app.secret_key = app_secret_key
 cors = CORS(app)
 
+@app.route('/client')
+def get_client():
+  return render_template('auth/register.html' )
+
 @app.route('/')
 def index():
   dummy_times = [datetime.datetime(2022, 1, 1, 10, 0, 0),

@@ -19,6 +19,10 @@ def check_token(token):
   except requests.exceptions.HTTPError:
     return "invalid token"
 
+@bp.route("/register", methods=["GET"])
+def register_page():
+  return render_template("auth/register.html")
+
 @bp.route("/register", methods=["POST"])
 def register_user():
   params = request.get_json()
@@ -46,6 +50,10 @@ def register_user():
 
   #print(user)
   return {"idToken": user["idToken"]}, 200
+
+@bp.route("login", methods=["GET"])
+def login_page():
+  return render_template("auth/login.html")
 
 @bp.route("/login", methods=["POST"])
 def login_user():
