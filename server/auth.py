@@ -1,5 +1,6 @@
 from flask import Flask, render_template, Blueprint, request
 import pyrebase
+import requests
 
 from config import config, user_types
 
@@ -10,7 +11,15 @@ storage = firebase.storage()
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
-@bp.route("/register")
+
+def check_token(token):
+  try:
+    decoded_token = auth.get_account_info(token)
+    return (decoded_token["users"][0])
+  except requests.exceptions.HTTPError:
+    return "invalid token"
+
+@bp.route("/register", methods=["POST"])
 def register_user():
   params = request.get_json()
   name = params["name"]
@@ -38,3 +47,24 @@ def register_user():
   #print(user)
   return {"idToken": user["idToken"]}, 200
 
+@bp.route("/login", methods=["POST"])
+def login_user():
+  params = request.get_json()
+  email = params["email"]
+  password = params["password"]
+  user = auth.sign_in_with_email_and_password(email, password)
+  return {"idToken": user["idToken"]}, 200
+
+@bp.route("/user/myself", methods=["GET"])
+def get_my_info():
+  u_token = request.headers.get("Authorization")
+  decoded = check_token(u_token) #localId
+  if decoded == "invalid token":
+    return {"status": "Invalid token"}, 200
+  u_id = decoded["localId"]
+  data = db.child("users").child(u_id).get().val()
+  if data is None:
+      return {
+          "error": "User not found. Account data possibly corrupted."
+      }, 500
+  return data, 200
