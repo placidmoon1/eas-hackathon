@@ -1,9 +1,12 @@
 from flask import Flask, render_template, Blueprint, request
 import pyrebase
+import time
 import requests
 
 from config import config, user_types
 from auth import check_token
+from incentives import i_portions
+
 
 firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
@@ -21,12 +24,14 @@ def item_incentivize():
 
   params = request.get_json()
   item_id = params["item_id"] 
-  
+  multiplier = float(params["multiplier"])
+
   #customer_id can be both registered & temp id
   customer_id = params["customer_id"] 
 
   #get information about the item
   item_info = db.child("items").child(item_id).get().val()
+  factory_id = item_info["factory_id"]
 
   if (int(item_info["incentive_status"]) == 1):
     return {"status": "item already claimed & incentivized"}, 403
@@ -37,15 +42,35 @@ def item_incentivize():
     "incentive_status": 1
   })
 
-  #give incentives
-  db.child("incentives").child(customer_id).push({
+  c_incen = INCENTIVE_AMOUNT * multiplier * i_portions["customer"]
+  f_incen = INCENTIVE_AMOUNT * i_portions["factory"]
+  d_incen = INCENTIVE_AMOUNT * i_portions["disposal"]
+  lo_incen = INCENTIVE_AMOUNT * i_portions["lottery"]
+  le_incen = INCENTIVE_AMOUNT * i_portions["leaderboard"]
+
+  #multiplier is 0.7 ~ 1.05 (70% to 105%)
+  #depending on the multiplie, our total gain is 0.75 ~ 2.5 out of 10
+  fc_delta = INCENTIVE_AMOUNT * (1 - multiplier) * i_portions["customer"]
+  fc_incen = INCENTIVE_AMOUNT * i_portions["FullCycle"] + fc_delta
+
+  #give incentives to customer, factory, disposal, and FullCycle
+  ##0.5 to customer
+  db.child("incentives").push({
     "product_id": item_info["product_id"],
     "item_id": item_info["item_id"],
     "customer_id": customer_id,
     "disposal_id": disposal_id,
-    "incentive_amount": INCENTIVE_AMOUNT,
-    "incentive_used": 0
+    "factory_id": factory_id,
+    "incentive_amount": [c_incen, f_incen, d_incen, fc_incen, lo_incen, le_incen],
+    "c_incen_left": c_incen,
+    "f_incen_left": f_incen,
+    "d_incen_left": d_incen,
+    "fc_incen_left": fc_incen,
+    "lo_incen_left": lo_incen,
+    "le_incen_left": le_incen,
+    "timestamp": int(time.time()),
   })
+
   
   return {"status": "post success"}, 200
 
