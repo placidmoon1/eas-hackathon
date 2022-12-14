@@ -3,7 +3,11 @@ from flask_cors import CORS
 from config import app_secret_key
 import datetime
 import os
+
+#blueprints
 import auth
+import incentives
+import factory 
 
 app = Flask(__name__)
 app.secret_key = app_secret_key
@@ -19,6 +23,8 @@ def index():
   return render_template('index.html', times=dummy_times)
 
 app.register_blueprint(auth.bp)
+app.register_blueprint(incentives.bp)
+app.register_blueprint(factory.bp)
 
 if __name__ == '__main__':
   app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
