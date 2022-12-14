@@ -15,7 +15,11 @@ bp = Blueprint("customer", __name__, url_prefix="/customer")
 @bp.route("/item/ownership", methods=["PATCH"])
 def item_ownership():
   u_token = request.headers.get("Authorization")
-  customer_id = check_token(u_token)['localId']
+  c_token = check_token(u_token)
+  if c_token == "invalid token":
+    return {"status": "Invalid token"}, 404
+
+  customer_id = c_token['localId']
 
   params = request.get_json()
   item_id = params["item_id"]  
@@ -27,13 +31,32 @@ def item_ownership():
   
   return {"status": "post success"}
 
-@bp.route("/get/item-list")
+@bp.route("/get/item-list",  methods=["GET"])
 def get_user_item_list():
   u_token = request.headers.get("Authorization")
-  customer_id = check_token(u_token)['localId']
+  c_token = check_token(u_token)
+  if c_token == "invalid token":
+    return {"status": "Invalid token"}, 404
 
+  customer_id = c_token['localId']
   c_ilist = db.child("items").order_by_child("item_location").equal_to(customer_id).get().val()
   if c_ilist == []:
     return {}, 200
 
   return c_ilist, 200
+
+@bp.route("/get/incentives", methods=["GET"])
+def get_incentives():
+  u_token = request.headers.get("Authorization")
+  c_token = check_token(u_token)
+  if c_token == "invalid token":
+    return {"status": "Invalid token"}, 404
+
+  customer_id = c_token['localId']
+  incentive_list = db.child("items").child(customer_id).get().val()
+  if incentive_list == [] or incentive_list is None:
+    return {}, 200
+  
+  print(incentive_list)
+
+  return incentive_list, 200
