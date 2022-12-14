@@ -52,3 +52,22 @@ def record_item():
   })
 
   return {"status": "set succes"}, 200
+
+@bp.route("/get/plist", methods=["GET"])
+def get_product_list():
+  u_token = request.headers.get("Authorization")
+  factory_id = check_token(u_token)['localId']
+  
+  f_plist = db.child("products").order_by_child("factory_id").equal_to(factory_id).get().val()
+  
+  return f_plist, 200
+
+@bp.route("/get/ilist", methods=["GET"])
+def get_item_list():
+  u_token = request.headers.get("Authorization")
+  factory_id = check_token(u_token)['localId']
+  product_id = request.args.get("product_id")
+
+  p_itemlist = db.child("items").order_by_child("product_id").equal_to(product_id).get().val()
+  
+  return p_itemlist, 200
