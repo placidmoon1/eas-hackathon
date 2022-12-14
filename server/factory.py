@@ -31,7 +31,7 @@ def record_product():
     "factory_id": factory_id
   })
 
-  return {"status": "set succes"}, 200
+  return {"status": "set success"}, 200
 
 @bp.route("/record/item", methods=["POST"])
 def record_item():
@@ -51,7 +51,7 @@ def record_item():
     "incentive_status": 0         #not yet used (0) | used (1)
   })
 
-  return {"status": "set succes"}, 200
+  return {"status": "set success"}, 200
 
 @bp.route("/get/plist", methods=["GET"])
 def get_product_list():
