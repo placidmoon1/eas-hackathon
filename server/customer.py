@@ -12,7 +12,7 @@ storage = firebase.storage()
 
 bp = Blueprint("customer", __name__, url_prefix="/customer")
 
-@bp.route("/item/ownership", methods=["POST"])
+@bp.route("/item/ownership", methods=["PATCH"])
 def item_ownership():
   u_token = request.headers.get("Authorization")
   customer_id = check_token(u_token)['localId']

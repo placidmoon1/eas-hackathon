@@ -9,6 +9,7 @@ import auth
 import incentives
 import factory 
 import customer
+import disposal
 
 app = Flask(__name__)
 app.secret_key = app_secret_key
@@ -27,6 +28,7 @@ app.register_blueprint(auth.bp)
 app.register_blueprint(incentives.bp)
 app.register_blueprint(factory.bp)
 app.register_blueprint(customer.bp)
+app.register_blueprint(disposal.bp)
 
 if __name__ == '__main__':
   app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
