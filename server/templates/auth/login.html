@@ -1,18 +1,38 @@
 {% extends 'base.html' %}
 
-{% block header %}
-  <h1>{% block title %}Log In{% endblock %}</h1>
-{% endblock %}
-
 {% block content %}
-  <form method="post">
-    <label for="username">Username</label>
-    <input name="username" id="username" required>
-    <label for="password">Password</label>
-    <input type="password" name="password" id="password" required>
-    <input type="submit" value="Log In">
-  </form>
-  <button class="button button-pink" data-ripple-light="true">
-    Button
-  </button>
+<div class="hero min-h-screen bg-base-200">
+  <div class="hero-content flex-col lg:flex-row-reverse" style="column-gap: 30px;">
+    <div class="text-center lg:text-left">
+      <h1 class="text-5xl font-bold">Login now!</h1>
+      <p class="py-6">If you don't have an account, you can register here:
+        <span> <a class="link" href="/auth/register">Register</a></span>
+      </p>
+     
+    </div>
+    <div class="card flex-shrink-0 w-full max-w-sm shadow-xl bg-base-100">
+      <form class="card-body" action="/auth/login" method="POST">
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Email</span>
+          </label>
+          <input type="email" id="email" name="email" placeholder="eas@gmail.com" class="input input-bordered" required/>
+        </div>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Password</span>
+          </label>
+          <input type="password" placeholder="password" id="password" name="password" class="input input-bordered" required/>
+        </div>
+
+        <div class="form-control mt-6">
+          <button class="btn btn-outline btn-primary" id = "submit" type="submit">
+            Login
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
 {% endblock %}

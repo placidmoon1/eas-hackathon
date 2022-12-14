@@ -1,3 +1,7 @@
 .nav-link {
   color: black;
 }
+
+.hero-content {
+  row-gap: 2rem;
+}

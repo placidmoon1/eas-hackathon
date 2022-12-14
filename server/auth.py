@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Blueprint, request
+from flask import Flask, render_template, Blueprint, request, session
 import pyrebase
 import requests
 
@@ -57,11 +57,16 @@ def login_page():
 
 @bp.route("/login", methods=["POST"])
 def login_user():
-  params = request.get_json()
-  email = params["email"]
-  password = params["password"]
-  user = auth.sign_in_with_email_and_password(email, password)
-  return {"idToken": user["idToken"]}, 200
+  #params = request.get_json()
+  email = request.form["email"]
+  password = request.form["password"]
+  try:
+    user = auth.sign_in_with_email_and_password(email, password)
+  except:
+    return "invalid email or pw", 200
+  session.clear()
+  session['user_id'] = user['idToken']
+  return render_template("auth/login.html")
 
 @bp.route("/user/myself", methods=["GET"])
 def get_my_info():
