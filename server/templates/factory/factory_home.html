@@ -27,7 +27,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>            
             Register Product</a></li>
-          <li class="hover-bordered"><a>
+          <li class="hover-bordered"><a href="{{ url_for('factory.register_item') }}">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z" />
               <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM13.5 19.5h.75v.75h-.75v-.75zM19.5 13.5h.75v.75h-.75v-.75zM19.5 19.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75z" />
@@ -37,7 +37,7 @@
           <li class="menu-title py-2">
             <span>My data!</span>
           </li>
-          <li class="hover-bordered">    <a>
+          <li class="hover-bordered">    <a href="{{ url_for('factory.get_product_list') }}">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             See my products
           </a></li>
@@ -50,22 +50,27 @@
       </div>
     </div>
   </div>
-  {% if product_name != "" %}
-  <label class = "swap">
+  {% if status != "" %}
+  <label class = "swap remove-me" onclick="remove_me()">
     <input type="checkbox" />
     <div class="toast toast-start swap-off" >
       <div class="alert alert-success">
         <div>
-          <span>{{product_name}} registered.</span>
+          <span>{{status}}</span>
         </div>
       </div>
     </div>
-    <div class = "swap-on" style="display: none; " >Hello</div>
+    <div class = "swap-on" style="display: none; visibility: hidden;">Hello</div>
   </label>
+  {% block script %} 
+    <script>
+    function remove_me() {
+      var thingToRemove = document.querySelectorAll(".remove-me")[0];
+      thingToRemove.parentNode.removeChild(thingToRemove);
+    }
+    </script>
+  {% endblock %}
   {% endif %}
 </div>
-
-
-
 
 {% endblock %}

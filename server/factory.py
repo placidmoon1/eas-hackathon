@@ -2,6 +2,7 @@ from flask import Flask, render_template, Blueprint, request, session, redirect,
 import pyrebase
 import requests
 import functools
+import time
 
 from config import config, user_types
 from auth import check_token
@@ -38,6 +39,27 @@ def get_factory_home():
 def register_product():
   return render_template("factory/register_product.html")
 
+@bp.route("/register_item", methods=["GET"])
+@f_login_required
+def register_item():
+  u_token = session['user_id'] 
+  user_data = check_token(u_token)
+  if user_data == "invalid token":
+    g.user = None
+    session.clear()
+    return redirect(url_for('auth.login_user'))
+
+  factory_id = user_data['localId']
+
+  products =  db.child("products").order_by_child("factory_id").equal_to(factory_id).get().val()
+  if products == []:
+    products = {}
+  
+  print(products.items())
+  
+  return render_template("factory/register_item.html", products=products.items(), item_id="ITEM_NEED_TO_BE_REGISTERED_FIRST!")
+
+
 @bp.route("/record/product", methods=["POST"])
 @f_login_required
 def record_product():
@@ -63,12 +85,14 @@ def record_product():
     "factory_id": factory_id
   })
 
-  return render_template("factory/factory_home.html", product_name=product_name)
+  status = product_name + " registered."
+
+  return render_template("factory/factory_home.html", status=status)
 
 @bp.route("/record/item", methods=["POST"])
 @f_login_required
 def record_item():
-  u_token = request.headers.get("Authorization")
+  u_token = session['user_id'] 
   user_data = check_token(u_token)
   if user_data == "invalid token":
     g.user = None
@@ -76,42 +100,64 @@ def record_item():
     return redirect(url_for('auth.login_user'))
 
   factory_id = user_data['localId']
+  product_id = request.form["product_id"] 
+  number_items = int(request.form["number_items"])
 
-  params = request.get_json()
-  product_id = params["product_id"] 
+  for i in range(number_items):
+    item_id = product_id + "-i" + db.generate_key()
+    db.child("items").child(item_id).set({
+      "timestamp": int(time.time()),
+      "product_id": product_id,     # FK
+      "factory_id": factory_id,     # FK
+      "item_id": item_id,           # PK (w other 2 FKs)
+      "item_location": factory_id,
+      "scanned": 0,
+      "incentive_status": 0         #not yet used (0) | used (1)
+    })
 
-  item_id = product_id + "-i" + db.generate_key()
+  description = str(number_items) + " items created for " + item_id
 
-  db.child("items").child(item_id).set({
-    "product_id": product_id,     # FK
-    "factory_id": factory_id,     # FK
-    "item_id": item_id,           # PK (w other 2 FKs)
-    "item_location": factory_id,
-    "incentive_status": 0         #not yet used (0) | used (1)
-  })
-
-  return {"status": "set success"}, 200
+  return render_template("factory/factory_home.html", status=description)
 
 @bp.route("/get/plist", methods=["GET"])
 @f_login_required
 def get_product_list():
-  factory_id = request.args.get("factory_id")
-  
+  u_token = session['user_id'] 
+  user_data = check_token(u_token)
+  if user_data == "invalid token":
+    g.user = None
+    session.clear()
+    return redirect(url_for('auth.login_user'))
+
+  factory_id = user_data['localId']  
   f_plist = db.child("products").order_by_child("factory_id").equal_to(factory_id).get().val()
   
   if f_plist == []:
-    return {}, 200
+    f_plist = {}
 
-  return f_plist, 200
+  return render_template("factory/factory_products.html", plist=f_plist.items())
 
-@bp.route("/get/ilist", methods=["GET"])
+@bp.route("/get/ilist/<pid>", methods=["GET"])
 @f_login_required
-def get_item_list():
-  product_id = request.args.get("product_id")
+def get_item_list(pid):
 
-  p_itemlist = db.child("items").order_by_child("product_id").equal_to(product_id).get().val()
+  p_itemlist = db.child("items").order_by_child("product_id").equal_to(pid).get().val()
+  product_name = db.child("products").child(pid).get().val()["product_name"].replace(' ', '_')
   
   if p_itemlist == []:
-    return {}, 200
+    p_itemlist = {}
 
-  return p_itemlist, 200
+  return render_template("factory/factory_items.html", 
+    ilist=p_itemlist.items(),
+    product_name=product_name)
+
+@bp.route("/patch/item/scan", methods=["PATCH"])
+@f_login_required
+def patch_scan_status():
+  params = request.get_json()
+  iid = params["item_id"]  
+  db.child("items").child(iid).update({
+    "scanned": 1
+  })
+  
+  return {"status": "ok"}, 200

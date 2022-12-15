@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}
+🏭 A Product's Item Data
+{% endblock %}
+
+{% block content %}
+<div class="hero bg-base-200" style="min-height: calc(100vh - 56px)">
+  <div class="hero-content flex-col lg:flex-row-reverse" style="column-gap: 30px;" >
+    <div class="card flex-shrink-0 w-full max-w-sm shadow-xl bg-base-100">
+      <div class="card-body">
+        <h2 class="card-title">QR Code of Item </h2>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Item ID</span>
+          </label>
+          <input type="text" class="input input-bordered" id = "scanning_item" value="click on a non-scanned item" disabled/>
+        </div>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">QR Code</span>
+          </label>
+          <div id="qrcode"></div>
+        </div>
+        <button class="btn btn-outline btn-primary" id = "submit" onclick="updated_scanned()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM13.5 19.5h.75v.75h-.75v-.75zM19.5 13.5h.75v.75h-.75v-.75zM19.5 19.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75z" />
+          </svg>    &nbsp; Print Complete
+        </button>
+      </div>
+    </div>
+    <div class="card w-max shadow-xl bg-base-100">
+      <form class="card-body">
+        <h2 class="card-title">🏭 Item Data</h2>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Factory Name</span>
+          </label>
+          <input type="text" class="input input-bordered" value={{g.user["name"]}} disabled/>
+        </div>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Product Name</span>
+          </label>
+          <input type="text" class="input input-bordered" value={{product_name}} disabled/>
+        </div>
+        <div class="overflow-x-auto form-control">
+          <label class="label">
+            <span class="label-text">Items Created for the Product</span>
+          </label>
+          <table class="table w-full">
+            <!-- head -->
+            <thead>
+              <tr>
+                <th></th>
+                <th>Abbreviated Item_ID</th>
+                <th>Printed</th>
+                <th>Incentive Claimed</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- row 1 -->
+              {% for key, items in ilist %}
+              <tr class="hover">
+                <th>{{loop.index}}</th>
+                <td>{{items["item_id"].split("-i-")[1]}}</td>
+                {% if items["scanned"] == 0 %} 
+                  <td class = "link link-primary not-scanned" id = "{{items['item_id']}}"  onclick="scan_me(this.id)">
+                     {{items["scanned"]}}
+                  </td>
+                {% else %}
+                  <td>{{items["scanned"]}}</td>
+                {% endif %}
+                <td>{{items["incentive_status"]}}</td>
+                <td>{{items["timestamp"]}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </form>
+      </div>
+
+    </div>
+</div>
+
+{% block script %}
+<script type="text/javascript">
+  var qrcode = new QRCode("qrcode");
+
+  function scan_me(clicked_id) {
+    console.log(clicked_id)
+    document.getElementById("scanning_item").setAttribute("value", clicked_id)
+    qrcode.makeCode(clicked_id);;
+  }
+  scan_me("click on a non-scanned item")
+
+  function updated_scanned() {
+    item_id = document.getElementById("scanning_item").value
+    let data = {item_id: item_id};
+    fetch("/factory/patch/item/scan", {
+      method: "PATCH",
+      headers: {'Content-Type': 'application/json'}, 
+      body: JSON.stringify(data)
+    }).then(res => {
+      console.log("Request complete! response:", res);
+    });
+    document.getElementById(item_id).classList.remove('link');
+    document.getElementById(item_id).classList.remove('link-primary');
+    document.getElementById(item_id).classList.remove('not-scanned');
+    document.getElementById(item_id).innerHTML = 1;
+  }
+</script>
+{% endblock %}
+{% endblock %}

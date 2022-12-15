@@ -2,6 +2,8 @@
 <title>{% block title %}{% endblock %}</title>
 <link href="https://cdn.jsdelivr.net/npm/daisyui@2.43.2/dist/full.css" rel="stylesheet" type="text/css" />
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="{{url_for('static', filename='qrcode.js')}}"></script>
+
 {% block script %}{% endblock %}
 <style>
   .navbar {
@@ -15,7 +17,7 @@
 <html data-theme="garden">
 <div class = "navbar w-full bg-primary text-primary-content">
   <div class="flex-1">
-    <a class="btn btn-ghost normal-case text-xl">FullCycle</a>
+    <a class="btn btn-ghost normal-case text-xl" href="{{url_for('auth.login_page')}}">FullCycle</a>
   </div>
   <div class = "flex-none">
     <ul class = "menu menu-horizontal px-1" >
