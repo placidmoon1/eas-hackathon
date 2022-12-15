@@ -2,26 +2,41 @@
 <title>{% block title %}{% endblock %} - Flaskr</title>
 <link href="https://cdn.jsdelivr.net/npm/daisyui@2.43.2/dist/full.css" rel="stylesheet" type="text/css" />
 <script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .navbar {
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;;
+    min-height: 48px;
+  }
+</style>
 
 <!-- script -->
-<html data-theme="winter">
-<div class = "navbar bg-base-300">
+<html data-theme="garden">
+<div class = "navbar w-full bg-primary text-primary-content">
   <div class="flex-1">
     <a class="btn btn-ghost normal-case text-xl">FullCycle</a>
   </div>
   <div class = "flex-none">
-    <ul class = "menu menu-horizontal px-1">
+    <ul class = "menu menu-horizontal px-1" >
       {% if g.user %}
         <li><span>{{ g.user['username'] }}</span>
         <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
       {% else %}
-        <li><a href="{{ url_for('auth.register_page') }}">Register</a>
-        <li><a href="{{ url_for('auth.login_page') }}">Log In</a>
+        <li>
+          <a href="{{ url_for('auth.register_page') }}">
+          Register
+          </a>
+        </li>
+        <li>
+          <a href="{{ url_for('auth.login_page') }}">
+            Log In
+          </a>
+        </li>
       {% endif %}
     </ul>
   </div>
 </div>
-<section class="content">
+<section class="content" >
   <header>
     {% block header %}{% endblock %}
   </header>
