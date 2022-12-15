@@ -22,7 +22,7 @@ def load_logged_in_user():
   if decoded == "invalid token":
     g.user = None
   else: 
-    print(decoded)
+    #print(decoded)
     localId = decoded["localId"]
     g.user = db.child("users").child(localId).get().val()
 

@@ -1,5 +1,26 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1> hello disposal_home</h1>
+<div class="hero min-h-screen bg-base-200">
+  <div class="hero-content flex-col lg:flex-row" style="column-gap: 30px;">
+    <div class="text-center lg:text-left">
+      <img class="mx-auto" src="{{url_for('static', filename='disposal.png')}}" width="200px"/>
+      <p class="text-xl pb-1">Hello,</p>
+      <h1 class="text-5xl font-bold">{{g.user["name"]}}</h1>
+      <p class="py-6 text-xl">If you don't have an account, you can register here:
+        <span> <a class="link" href="/auth/register">Register</a></span>
+      </p>
+     
+    </div>
+    <div class="card flex-shrink-0 w-full max-w-sm shadow-xl bg-base-100">
+      <form class="card-body" action="/auth/login" method="POST">
+        <ul class="menu bg-base-100 w-56 rounded-box">
+          <li><a>Item 1</a></li>
+          <li class="hover-bordered"><a>Hover me</a></li>
+          <li><a>Item 3</a></li>
+        </ul>
+      </form>
+    </div>
+  </div>
+</div>
 {% endblock %}
