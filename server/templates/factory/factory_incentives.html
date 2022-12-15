@@ -19,7 +19,7 @@
         </div>
         <div class="overflow-x-auto form-control">
           <label class="label">
-            <span class="label-text">Factory Products</span>
+            <span class="label-text">Factory Incentives</span>
           </label>
           <table class="table w-full">
             <!-- head -->
@@ -33,12 +33,12 @@
             </thead>
             <tbody>
               <!-- row 1 -->
-              {% for key, items in plist %}
+              {% for key, items in incen_list %}
               <tr class="hover">
                 <th>{{loop.index}}</th>
-                <td>{{key]}}</td>
-                <td>{{items["product_name"]}}</td>
-                <td>{{items["product_trash"]}}</td>
+                <td>{{key}}</td>
+                <td>{{items["f_incen_left"]}}</td>
+                <td>{{items["item_id"]}}</td>
               </tr>
               
               {% endfor %}

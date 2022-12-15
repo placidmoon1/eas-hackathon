@@ -151,6 +151,25 @@ def get_item_list(pid):
     ilist=p_itemlist.items(),
     product_name=product_name)
 
+@bp.route("/get/incen_list", methods=["GET"])
+@f_login_required
+def get_incen_list():
+  u_token = session['user_id'] 
+  user_data = check_token(u_token)
+  if user_data == "invalid token":
+    g.user = None
+    session.clear()
+    return redirect(url_for('auth.login_user'))
+
+  factory_id = user_data['localId']  
+  incen_list = db.child("incentives").order_by_child("factory_id").equal_to(factory_id).get().val()
+  
+  if incen_list == []:
+    incen_list = {}
+
+  return render_template("factory/factory_incentives.html", 
+    incen_list=incen_list.items())
+
 @bp.route("/patch/item/scan", methods=["PATCH"])
 @f_login_required
 def patch_scan_status():
