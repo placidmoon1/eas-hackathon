@@ -9,11 +9,17 @@
   <div class="hero-content flex-col lg:flex-row" style="column-gap: 30px;">
     <div class="text-center lg:text-left">
       <img class="mx-auto" src="{{url_for('static', filename='disposal.png')}}" width="200px"/>
-      <p class="text-xl pb-1">Hello,</p>
+      <p class="text-xl pb-1">You are at:</p>
       <h1 class="text-5xl font-bold">{{g.user["name"]}}</h1>
-      <p class="py-6 text-xl">“You do not rise to the level of your goals. You fall to the level of your systems.”
-      </p>
-     
+    </p>
+      <ul class="steps steps-vertical lg:steps-horizontal" style="min-width: 300px;">
+        <li class="step step-info">Have a customer QR ready (Creating a temp QR is possible!)</li>
+        <li class="step">Have your product QR ready</li>
+        <li class="step">Go to "Start Disposal", and scan your customer QR</li>
+        <li class="step">Scan products to dispose with FullCycle :)</li>
+        <li data-content="★" class="step step-primary">Receive Incentives</li>
+      </ul>
+
     </div>
     <div class="card flex-shrink-0 w-full max-w-sm shadow-xl bg-base-100">
       <div class="card-body" >
