@@ -78,12 +78,12 @@ def item_incentivize():
   
   return {"status": "post success"}, 200
 
-@bp.route("/temp/create", methods=["POST"])
-def create_user_qr():
+@bp.route("/temp/create", methods=["GET"])
+def create_temp_qr():
   #assign temp id
-  temp_id = "userqr_" + db.generate_key()
+  temp_id = "t-" + db.generate_key()
   db.child("userqr").child(temp_id).set({
     "temp_id": temp_id
   })
 
-  return {"status": "qr creation success", "userqr": temp_id}, 200
+  return render_template("disposal/create_temp_qr.html", temp_id=temp_id)
