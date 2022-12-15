@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Blueprint, request, redirect, url_for, g
+from flask import Flask, render_template, Blueprint, request, redirect, url_for, g, session
 import pyrebase
 import requests
 import functools
@@ -39,12 +39,14 @@ def c_register_products():
 @bp.route("/item/ownership", methods=["PATCH"])
 @c_login_required
 def item_ownership():
-  u_token = request.headers.get("Authorization")
-  c_token = check_token(u_token)
-  if c_token == "invalid token":
-    return {"status": "Invalid token"}, 404
+  u_token = session['user_id'] 
+  user_data = check_token(u_token)
+  if user_data == "invalid token":
+    g.user = None
+    session.clear()
+    return redirect(url_for('auth.login_user'))
 
-  customer_id = c_token['localId']
+  customer_id = user_data['localId']
 
   params = request.get_json()
   item_id = params["item_id"]  

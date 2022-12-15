@@ -8,7 +8,7 @@
 <div class="hero bg-base-200" style="min-height: calc(100vh - 56px)">
   <div class="hero-content">
     <div class="card flex-shrink-0 w-full max-w-sm shadow-xl bg-base-100">
-      <form class="card-body">
+      <div class="card-body">
         <h2 class="card-title">Register Products for 👪</h2>
         <div class="form-control">
           <label class="label">
@@ -35,11 +35,12 @@
         </div>
        
         <div class="form-control mt-6">
-          <button class="btn btn-outline btn-primary" id = "submit" type="submit">
+          <button class="btn btn-outline btn-primary" id = "submit" onclick="register_product()">
             Register
           </button>
         </div>
-      </form>
+
+      </div>
     </div>
   </div>
 </div>
@@ -57,11 +58,39 @@
 {% block endscript %} 
 <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 <script>
+  function register_product() {
+    item_id = document.getElementById("span-scanned-id").value
+    let data = {item_id: item_id};
+    fetch("/customer/item/ownership", {
+      method: "PATCH",
+      headers: {'Content-Type': 'application/json'}, 
+      body: JSON.stringify(data)
+    }).then(res => {
+      console.log("Request complete! response:", res);
+      document.getElementById("span-scanned-id").innerHTML = "Register success! Searching again..";
+      document.getElementById("alert-scan-status").classList.remove('alert-info');
+      document.getElementById("alert-scan-status").classList.add('alert-success');
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+      document.getElementById("span-scanned-id").innerHTML = "error! invalid id";
+      document.getElementById("alert-scan-status").classList.remove('alert-success');
+      document.getElementById("alert-scan-status").classList.add('alert-error');
+    });
+  }
+
   function onScanSuccess(decodedText, decodedResult) {
     // handle the scanned code as you like, for example:
     console.log(`Code matched = ${decodedText}`, decodedResult);
+    document.getElementById("span-scanned-id").value = decodedText;
     document.getElementById("span-scanned-id").innerHTML = "found: " + decodedText;
-    document.getElementById("alert-scan-status").classList.add('alert-success');
+    document.getElementById("alert-scan-status").classList.add('alert-info');
+    if (document.getElementById("alert-scan-status").classList.contains('alert-error')) {
+      document.getElementById("alert-scan-status").classList.remove('alert-error');
+    }
+    if (document.getElementById("alert-scan-status").classList.contains('alert-success')) {
+      document.getElementById("alert-scan-status").classList.remove('alert-success');
+    }
   }
 
   function onScanFailure(error) {
