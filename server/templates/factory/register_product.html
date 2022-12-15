@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}
+🏭 Product Register
+{% endblock %} 
+
+{% block content %}
+<div class="hero bg-base-200" style="min-height: calc(100vh - 56px)">
+  <div class="hero-content">
+    <div class="card flex-shrink-0 w-full max-w-sm shadow-xl bg-base-100">
+      <form class="card-body" action="/factory/record/product" method="POST">
+        <h2 class="card-title">Register Products for 🏭</h2>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Factory Name</span>
+          </label>
+          <input type="text" class="input input-bordered" value={{g.user["name"]}} disabled/>
+        </div>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Product Name</span>
+          </label>
+          <input type="text" id="product_name" name="product_name" placeholder="Nestle Water Bottle" class="input input-bordered" required/>
+        </div>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Product ISBN</span>
+          </label>
+          <input type="text" placeholder="9212312312" id="product_isbn" name="product_isbn" class="input input-bordered" required/>
+        </div>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Trash Produced (separate with commas)</span>
+          </label>
+          <textarea id="product_trash" name="product_trash" class="textarea textarea-bordered h-12" placeholder="water bottle, label" required> </textarea>
+        </div>
+
+        <div class="form-control mt-6">
+          <button class="btn btn-outline btn-primary" id = "submit" type="submit">
+            Register
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

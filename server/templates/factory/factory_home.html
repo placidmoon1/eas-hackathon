@@ -1,17 +1,17 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Factory Home
+🏭 Home
 {% endblock %} 
 
 {% block content %}
-<div class="hero min-h-screen bg-base-200">
+<div class="hero bg-base-200" style="min-height: calc(100vh - 56px)">
   <div class="hero-content flex-col lg:flex-row" style="column-gap: 30px;">
     <div class="text-center lg:text-left">
       <img class="mx-auto" src="{{url_for('static', filename='factory.png')}}" width="200px"/>
       <p class="text-xl pb-1">Hello,</p>
       <h1 class="text-5xl font-bold">{{g.user["name"]}}</h1>
-      <p class="py-6 text-xl">“You do not rise to the level of your goals. <br> You fall to the level of your systems.”
+      <p class="py-6 text-xl">“You do not rise to the level of your goals. You fall to the level of your systems.”
       </p>
      
     </div>
@@ -22,7 +22,7 @@ Factory Home
           <li class="menu-title py-2">
             <span>Factory Actions!</span>
           </li>
-          <li class="hover-bordered"><a>
+          <li class="hover-bordered"><a href="{{ url_for('factory.register_product') }}">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>            
@@ -50,5 +50,22 @@ Factory Home
       </div>
     </div>
   </div>
+  {% if product_name != "" %}
+  <label class = "swap">
+    <input type="checkbox" />
+    <div class="toast toast-start swap-off" >
+      <div class="alert alert-success">
+        <div>
+          <span>{{product_name}} registered.</span>
+        </div>
+      </div>
+    </div>
+    <div class = "swap-on" style="display: none; " >Hello</div>
+  </label>
+  {% endif %}
 </div>
+
+
+
+
 {% endblock %}

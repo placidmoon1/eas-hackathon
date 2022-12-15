@@ -30,7 +30,7 @@ def check_token(token):
   try:
     decoded_token = auth.get_account_info(token)
     return (decoded_token["users"][0])
-  except requests.exceptions.HTTPError:
+  except:
     return "invalid token"
 
 @bp.route("/register", methods=["GET"])
