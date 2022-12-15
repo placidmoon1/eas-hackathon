@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}
+👪 Item Data
+{% endblock %}
+
+{% block content %}
+<div class="hero bg-base-200" style="min-height: calc(100vh - 56px)">
+  <div class="hero-content flex-col lg:flex-row-reverse" style="column-gap: 30px;" >
+    <div class="card flex-shrink-0 w-full max-w-sm shadow-xl bg-base-100">
+      <div class="card-body">
+        <h2 class="card-title">My Profile </h2>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">My ID</span>
+          </label>
+          <input type="text" class="input input-bordered" value="{{c_id}}" disabled/>
+        </div>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">QR Code</span>
+          </label>
+          <div id="qrcode"></div>
+        </div>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Redeemable QR Codes</span>
+          </label>
+          <div class = "text-3xl "><span class = " font-bold  text-primary">{{c_redeemable}} </span>QR code left</div>
+        </div>
+      </div>
+    </div>
+
+    </div>
+</div>
+
+{% block script %}
+<script>
+  var qrcode = new QRCode(document.getElementById("qrcode"), "{{c_id}}");
+</script>
+{% endblock %}
+
+{% endblock %}

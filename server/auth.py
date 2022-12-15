@@ -79,7 +79,7 @@ def register_user():
   session.clear()
   return render_template("auth/register.html")
 
-@bp.route("login", methods=["GET"])
+@bp.route("/login", methods=["GET"])
 def login_page():
   if g.user is not None:
     u_type = g.user["u_type"]

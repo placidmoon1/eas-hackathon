@@ -58,6 +58,20 @@ def item_ownership():
   
   return {"status": "post success"}
 
+@bp.route("/get/profile",  methods=["GET"])
+@c_login_required
+def get_c_profile():
+  u_token = session['user_id'] 
+  user_data = check_token(u_token)
+  if user_data == "invalid token":
+    g.user = None
+    session.clear()
+    return redirect(url_for('auth.login_user'))
+  customer_id = user_data['localId']
+  c_redeemable = len(db.child("items").order_by_child("item_location").equal_to(customer_id).get().val())
+
+  return render_template("customer/customer_profile.html", c_id=customer_id, c_redeemable=c_redeemable)
+
 @bp.route("/get/item-list",  methods=["GET"])
 @c_login_required
 def get_user_item_list():
