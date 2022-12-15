@@ -2,6 +2,7 @@
 <title>{% block title %}{% endblock %} - Flaskr</title>
 <link href="https://cdn.jsdelivr.net/npm/daisyui@2.43.2/dist/full.css" rel="stylesheet" type="text/css" />
 <script src="https://cdn.tailwindcss.com"></script>
+{% block script %}{% endblock %}
 <style>
   .navbar {
     padding-top: 4px !important;
@@ -19,7 +20,7 @@
   <div class = "flex-none">
     <ul class = "menu menu-horizontal px-1" >
       {% if g.user %}
-        <li><span>{{ g.user['username'] }}</span>
+        <li><a>Hello, {{g.user["name"]}}</a>
         <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
       {% else %}
         <li>

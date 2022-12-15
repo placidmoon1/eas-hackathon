@@ -1,5 +1,6 @@
 from flask import Flask, render_template
 from flask_cors import CORS
+from flask_qrcode import QRcode
 from config import app_secret_key
 import datetime
 import os
@@ -14,6 +15,7 @@ import disposal
 app = Flask(__name__)
 app.secret_key = app_secret_key
 cors = CORS(app)
+QRcode(app)
 
 @app.route('/client')
 def get_client():

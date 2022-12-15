@@ -2,8 +2,10 @@ from flask import Flask, render_template, Blueprint, request
 import pyrebase
 import requests
 
+
 from config import config, user_types
 from auth import check_token
+
 
 firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
@@ -15,6 +17,10 @@ bp = Blueprint("factory", __name__, url_prefix="/factory")
 @bp.route("/home", methods=["GET"])
 def get_factory_home():
   return render_template("factory/factory_home.html")
+
+@bp.route("/scan", methods=["GET"])
+def get_factory_scan():
+  return render_template("factory/factory_scan.html")
 
 @bp.route("/record/product", methods=["POST"])
 def record_product():
