@@ -61,15 +61,23 @@ def item_ownership():
 @bp.route("/get/item-list",  methods=["GET"])
 @c_login_required
 def get_user_item_list():
-  u_token = request.headers.get("Authorization")
-  c_token = check_token(u_token)
-  if c_token == "invalid token":
-    return {"status": "Invalid token"}, 404
+  u_token = session['user_id'] 
+  user_data = check_token(u_token)
+  if user_data == "invalid token":
+    g.user = None
+    session.clear()
+    return redirect(url_for('auth.login_user'))
 
-  customer_id = c_token['localId']
+  customer_id = user_data['localId']
   c_ilist = db.child("items").order_by_child("item_location").equal_to(customer_id).get().val()
   if c_ilist == []:
-    return {}, 200
+    c_ilist = {}
 
-  return c_ilist, 200
+  return render_template("customer/customer_items.html", ilist=c_ilist.items())
 
+@bp.route("/get/incentive/status",  methods=["GET"])
+@c_login_required
+def get_disposal_status():
+  item_id = request.args.get('item_id')
+  incentive_status = db.child("items").child(item_id).get().val()["incentive_status"]
+  return {"incentive_status": incentive_status}, 200
