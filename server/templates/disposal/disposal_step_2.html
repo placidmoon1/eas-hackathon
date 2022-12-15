@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}
+♻️ Disposal Step 2
+{% endblock %} 
+
+{% block content %}
+<div class="hero bg-base-200" style="min-height: calc(100vh - 56px)">
+  <div class="hero-content">
+    <div class="card flex-shrink-0 w-full max-w-sm shadow-xl bg-base-100">
+      <div class="card-body">
+        <h2 class="card-title">[Step 2] Scan the Item</h2>
+        <h3 class="font-bold"> Hello, <span id="c_id">{{c_id}}</span></h3>
+
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Scan Item QR Code</span>
+          </label>
+          <div id="reader" width="400px"></div>
+        </div>
+        
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Scan Status</span>
+          </label>
+          <div class="alert shadow" id="alert-scan-status">
+            <div>
+              <span id = "span-scanned-id">Searching..</span>
+            </div>
+          </div>
+        </div>
+       
+        <div class="form-control mt-6">
+          <button class="btn btn-outline btn-primary" id = "submit" onclick="goto_step3()">
+            Continue with the scan result
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{% block endscript %} 
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<script>
+
+  function goto_step3() {
+    // goto step 2
+    i_id = document.getElementById("span-scanned-id").value;
+    c_id = document.getElementById("c_id").innerHTML
+    window.location.replace("/disposal/dispose/step3/" + c_id + "/" + i_id);
+  }
+
+  function onScanSuccess(decodedText, decodedResult) {
+    // handle the scanned code as you like, for example:
+    console.log(`Code matched = ${decodedText}`, decodedResult);
+    document.getElementById("span-scanned-id").value = decodedText;
+    document.getElementById("span-scanned-id").innerHTML = "found: " + decodedText;
+    document.getElementById("alert-scan-status").classList.add('alert-info');
+  }
+
+  function onScanFailure(error) {
+    // handle scan failure, usually better to ignore and keep scanning.
+    // for example:
+    console.warn(`Code scan error = ${error}`);
+  }
+
+  let html5QrcodeScanner = new Html5QrcodeScanner(
+    "reader",
+    { fps: 10, qrbox: {width: 250, height: 250} },
+    /* verbose= */ false);
+  html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+</script>
+
+{% endblock %}
+
+{% endblock %}

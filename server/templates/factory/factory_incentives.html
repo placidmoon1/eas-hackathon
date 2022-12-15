@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}
+🏭 Incentives
+{% endblock %}
+
+{% block content %}
+<div class="hero bg-base-200" style="min-height: calc(100vh - 56px)">
+  <div class="hero-content flex-col lg:flex-row-reverse" style="column-gap: 30px;" >
+
+    <div class="card w-max shadow-xl bg-base-100">
+      <form class="card-body">
+        <h2 class="card-title">🏭 Incentives</h2>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Factory Name</span>
+          </label>
+          <input type="text" class="input input-bordered" value={{g.user["name"]}} disabled/>
+        </div>
+        <div class="overflow-x-auto form-control">
+          <label class="label">
+            <span class="label-text">Factory Products</span>
+          </label>
+          <table class="table w-full">
+            <!-- head -->
+            <thead>
+              <tr>
+                <th></th>
+                <th>Incentive_ID</th>
+                <th>Incentive Left</th>
+                <th>From Where?</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- row 1 -->
+              {% for key, items in plist %}
+              <tr class="hover">
+                <th>{{loop.index}}</th>
+                <td>{{key]}}</td>
+                <td>{{items["product_name"]}}</td>
+                <td>{{items["product_trash"]}}</td>
+              </tr>
+              
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+          
+      </form>
+    </div>
+</div>
+{% endblock %}

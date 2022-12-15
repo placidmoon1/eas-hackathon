@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Blueprint, request
+from flask import Flask, render_template, Blueprint, request, session, g, redirect, url_for
 import pyrebase
 import time
 import requests
@@ -23,8 +23,13 @@ def get_disposal_home():
 
 @bp.route("/user/incentivize", methods=["POST"])
 def item_incentivize():
-  u_token = request.headers.get("Authorization")
-  disposal_id = check_token(u_token)['localId']
+  u_token = session['user_id'] 
+  user_data = check_token(u_token)
+  if user_data == "invalid token":
+    g.user = None
+    session.clear()
+    return redirect(url_for('auth.login_user'))
+  disposal_id = user_data['localId']
 
   params = request.get_json()
   item_id = params["item_id"] 
@@ -82,8 +87,24 @@ def item_incentivize():
 def create_temp_qr():
   #assign temp id
   temp_id = "t-" + db.generate_key()
-  db.child("userqr").child(temp_id).set({
-    "temp_id": temp_id
+  db.child("users").child(temp_id).set({
+    "temp_id": temp_id,
+    "u_type": "temp_user"
   })
 
   return render_template("disposal/create_temp_qr.html", temp_id=temp_id)
+
+@bp.route("dispose/step1", methods=["GET"])
+def disposal_step_1():
+  return render_template("disposal/disposal_step_1.html")
+
+@bp.route("dispose/step2/<c_id>", methods=["GET"])
+def disposal_step_2(c_id):
+  return render_template("disposal/disposal_step_2.html", c_id=c_id)
+
+@bp.route("dispose/step3/<c_id>/<i_id>", methods=["GET"])
+def disposal_step_3(c_id, i_id):
+  p_id = db.child("items").child(i_id).get().val()["product_id"]
+  p_name = db.child("products").child(p_id).get().val()["product_name"]
+  p_trash = db.child("products").child(p_id).get().val()["product_trash"]
+  return render_template("disposal/disposal_step_3.html", c_id=c_id, i_id=i_id, p_name=p_name, p_trash=p_trash)

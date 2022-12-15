@@ -30,7 +30,7 @@ def index():
                   datetime.datetime(2022, 1, 3, 11, 0, 0),
                   ]
 
-  return render_template('index.html', times=dummy_times)
+  return render_template('auth/login.html')
 
 app.register_blueprint(auth.bp)
 app.register_blueprint(incentives.bp)
