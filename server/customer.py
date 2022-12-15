@@ -1,6 +1,7 @@
-from flask import Flask, render_template, Blueprint, request
+from flask import Flask, render_template, Blueprint, request, redirect, url_for, g
 import pyrebase
 import requests
+import functools
 
 from config import config, user_types
 from auth import check_token
@@ -12,11 +13,31 @@ storage = firebase.storage()
 
 bp = Blueprint("customer", __name__, url_prefix="/customer")
 
+def c_login_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+          return redirect(url_for('auth.login_page'))
+        elif g.user["u_type"] != "customer":
+          if (g.user["u_type"] == "factory"):
+            return redirect(url_for('factory.get_factory_home'))
+          if (g.user["u_type"] == "disposal"):
+            return redirect(url_for('disposal.get_disposal_home'))
+        return view(**kwargs)
+    return wrapped_view
+
 @bp.route("/home", methods=["GET"])
+@c_login_required
 def get_customer_home():
   return render_template("customer/customer_home.html")
 
+@bp.route("/register/products", methods=["GET"])
+@c_login_required
+def c_register_products():
+  return render_template("customer/customer_register_products.html")
+
 @bp.route("/item/ownership", methods=["PATCH"])
+@c_login_required
 def item_ownership():
   u_token = request.headers.get("Authorization")
   c_token = check_token(u_token)
@@ -36,6 +57,7 @@ def item_ownership():
   return {"status": "post success"}
 
 @bp.route("/get/item-list",  methods=["GET"])
+@c_login_required
 def get_user_item_list():
   u_token = request.headers.get("Authorization")
   c_token = check_token(u_token)

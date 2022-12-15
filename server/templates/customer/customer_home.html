@@ -8,7 +8,7 @@
 <div class="hero bg-base-200" style="min-height: calc(100vh - 56px)">
   <div class="hero-content flex-col lg:flex-row" style="column-gap: 30px;">
     <div class="text-center lg:text-left">
-      <img class="mx-auto" src="{{url_for('static', filename='factory.png')}}" width="200px"/>
+      <img class="mx-auto" src="{{url_for('static', filename='customer.png')}}" width="200px"/>
       <p class="text-xl pb-1">Hello,</p>
       <h1 class="text-5xl font-bold">{{g.user["name"]}}</h1>
       <p class="py-6 text-xl">“The most dangerous kind of waste is the waste we do not recognize”
@@ -22,7 +22,7 @@
           <li class="menu-title py-2">
             <span>Customer Actions!</span>
           </li>
-          <li class="hover-bordered"><a>
+          <li class="hover-bordered"><a href="{{ url_for('customer.c_register_products') }}">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>            
