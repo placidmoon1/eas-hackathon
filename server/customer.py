@@ -12,6 +12,10 @@ storage = firebase.storage()
 
 bp = Blueprint("customer", __name__, url_prefix="/customer")
 
+@bp.route("/home", methods=["GET"])
+def get_customer_home():
+  return render_template("customer/customer_home.html")
+
 @bp.route("/item/ownership", methods=["PATCH"])
 def item_ownership():
   u_token = request.headers.get("Authorization")

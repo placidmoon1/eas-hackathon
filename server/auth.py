@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Blueprint, request, session
+from flask import Flask, render_template, Blueprint, request, session, redirect, url_for
 import pyrebase
 import requests
 
@@ -66,6 +66,17 @@ def login_user():
     return "invalid email or pw", 200
   session.clear()
   session['user_id'] = user['idToken']
+  user_info = db.child("users").child(user['localId']).get().val()
+
+  if(user_info["u_type"] == "customer"):
+    return redirect(url_for("customer.get_customer_home"))
+  if(user_info["u_type"] == "disposal"):
+    return redirect(url_for("disposal.get_disposal_home"))
+  if(user_info["u_type"] == "factory"):
+    return redirect(url_for("factory.get_factory_home"))
+  
+  #else, wrong type
+  session.clear()
   return render_template("auth/login.html")
 
 @bp.route("/user/myself", methods=["GET"])

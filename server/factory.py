@@ -12,6 +12,10 @@ storage = firebase.storage()
 
 bp = Blueprint("factory", __name__, url_prefix="/factory")
 
+@bp.route("/home", methods=["GET"])
+def get_factory_home():
+  return render_template("factory/factory_home.html")
+
 @bp.route("/record/product", methods=["POST"])
 def record_product():
   u_token = request.headers.get("Authorization")

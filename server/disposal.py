@@ -17,6 +17,10 @@ INCENTIVE_AMOUNT = 10
 
 bp = Blueprint("disposal", __name__, url_prefix="/disposal")
 
+@bp.route("/home", methods=["GET"])
+def get_disposal_home():
+  return render_template("disposal/disposal_home.html")
+
 @bp.route("/user/incentivize", methods=["POST"])
 def item_incentivize():
   u_token = request.headers.get("Authorization")
